@@ -29,7 +29,30 @@ def add_tire():
     if not authenticate(auth):
         return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
     if request.method == 'POST':
-        tire = request.form.get('tire')
+        size = request.form.get('size')
+        brand = request.form.get('brand')
+        tire = {'size': size, 'brand': brand}
+        inventory.append(tire)
+    return render_template('add.html')
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_tire():
+    auth = request.authorization
+    if not authenticate(auth):
+        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    if request.method == 'POST':
+        measurement_type = request.form.get('measurement_type')
+        section_width = request.form.get('section_width')
+        aspect_ratio = request.form.get('aspect_ratio')
+        rim_size = request.form.get('rim_size')
+        load_rating = request.form.get('load_rating')
+        tire = {
+            'measurement_type': measurement_type,
+            'section_width': section_width,
+            'aspect_ratio': aspect_ratio,
+            'rim_size': rim_size,
+            'load_rating': load_rating
+        }
         inventory.append(tire)
     return render_template('add.html')
 
