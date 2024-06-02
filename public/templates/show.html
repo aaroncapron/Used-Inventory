@@ -21,17 +21,10 @@
 <body>
     <h1>All Inventory</h1>
 
-    <!-- Search form -->
+    <!-- search form -->
     <form action="/search" method="post">
-        <label for="section_width">Section Width:</label><br>
-        <input type="number" id="section_width" name="section_width" min="165" max="335" required><br>
-        
-        <label for="aspect_ratio">Aspect Ratio:</label><br>
-        <input type="number" id="aspect_ratio" name="aspect_ratio" min="25" max="85" required><br>
-        
-        <label for="rim_size">Rim Size:</label><br>
-        <input type="number" id="rim_size" name="rim_size" min="13" max="22" required><br>
-        
+        <label for="tire_size">Tire Size:</label><br>
+        <input type="text" id="tire_size" name="tire_size" placeholder="205/55/16" required><br>
         <input type="submit" value="Search Tire">
     </form>
 
