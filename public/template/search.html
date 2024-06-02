@@ -33,3 +33,14 @@
     <p><a href="/">Back to Home</a></p>
 </body>
 </html>
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+{% if results %}
+<ul>
+{% for tire in results %}
+    <li>{{ tire }}</li>
+{% endfor %}
+</ul>
+{% endif %}
