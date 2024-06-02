@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Tires</title>
+</head>
+<body>
+    <h1>Search Tires</h1>
+    <form action="/search" method="post">
+        <label for="measurement_type">Measurement Type:</label><br>
+        <select id="measurement_type" name="measurement_type" required>
+            <option value="metric">Metric</option>
+            <option value="imperial">Imperial</option>
+        </select><br>
+
+        <label for="section_width">Section Width:</label><br>
+        <input type="text" id="section_width" name="section_width" required><br>
+        
+        <label for="aspect_ratio">Aspect Ratio:</label><br>
+        <input type="text" id="aspect_ratio" name="aspect_ratio" required><br>
+        
+        <label for="rim_size">Rim Size:</label><br>
+        <input type="text" id="rim_size" name="rim_size" required><br>
+        
+        <input type="submit" value="Search Tire">
+    </form>
+
+    <h2>Remove Tires</h2>
+    <form action="/remove" method="post">
+        <label for="tire_id">Tire ID:</label><br>
+        <input type="text" id="tire_id" name="tire_id" required><br>
+        <input type="submit" value="Remove Tire">
+    </form>
+    <p><a href="/">Back to Home</a></p>
+</body>
+</html>
