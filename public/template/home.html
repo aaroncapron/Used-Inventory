@@ -2,16 +2,51 @@
 <html>
 <head>
     <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #dcdcdc;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        ul li a {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        ul li a:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Tire Inventory Management System</h1>
-    <p>Please choose an option:</p>
-    <ul>
-        <li><a href="/add">Add New Tires</a></li>
-        <li><a href="/remove">Remove Tires</a></li>
-        <li><a href="/search">Search by Size</a></li>
-        <li><a href="/show">Show All Inventory</a></li>
-        <li><a href="/logout">Logout</a></li>
-    </ul>
+    <div class="container">
+        <h1>Welcome to the Tire Inventory Management System</h1>
+        <p>Please choose an option:</p>
+        <ul>
+            <li><a href="/add">Add New Tires</a></li>
+            <li><a href="/remove">Remove Tires</a></li>
+            <li><a href="/search">Search by Size</a></li>
+            <li><a href="/show">Show All Inventory</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
 </body>
 </html>
