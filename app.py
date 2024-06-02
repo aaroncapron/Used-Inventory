@@ -15,7 +15,6 @@ app.secret_key = os.getenv('SECRET_KEY').encode()
 USERNAME = os.getenv('APP_USERNAME')
 PASSWORD_HASH = generate_password_hash(os.getenv('PASSWORD'))
 
-# temp inventory
 inventory = []
 
 # authenticates user
@@ -83,6 +82,9 @@ def search_by_size():
     auth = request.authorization
     if not authenticate(auth):
         return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    
+    results = []
+
     # returns the findings of the exact request + three sizes above and below the original request
     if request.method == 'POST':
         section_width = int(request.form.get('section_width'))
