@@ -1,45 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Show Inventory</title>
+    <title>Show All Inventory</title>
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #cdcdcd;
             padding: 8px;
+            text-align: left;
         }
         th {
-            background-color: #4CAF50;
+            background-color: #d41414;
             color: white;
         }
     </style>
 </head>
 <body>
-    <h1>Tire Inventory</h1>
+    <h1>All Inventory</h1>
     <table>
-        <thead>
-            <tr>
-                <th>Section Width</th>
-                <th>Aspect Ratio</th>
-                <th>Rim Size</th>
-                <th>Load Rating</th>
-                <th>Brand Name</th>
-            </tr>
-        </thead>
-        <tbody>
+        <tr>
+            <th>Brand Name</th>
+            <th>Load Rating</th>
+            <th>Section Width</th>
+            <th>Aspect Ratio</th>
+            <th>Rim Size</th>
+        </tr>
         {% for tire in inventory %}
-            <tr>
-                <td>{{ tire.section_width }}</td>
-                <td>{{ tire.aspect_ratio }}</td>
-                <td>{{ tire.rim_size }}</td>
-                <td>{{ tire.load_rating }}</td>
-                <td>{{ tire.brand_name }}</td>
-            </tr>
+        <tr>
+            <td>{{ tire.brand_name }}</td>
+            <td>{{ tire.load_rating }}</td>
+            <td>{{ tire.section_width }}</td>
+            <td>{{ tire.aspect_ratio }}</td>
+            <td>{{ tire.rim_size }}</td>
+        </tr>
         {% endfor %}
-        </tbody>
     </table>
     <p><a href="/">Back to Home</a></p>
 </body>
