@@ -40,17 +40,26 @@ def add_tire():
     if request.method == 'POST':
         # getters
         measurement_type = request.form.get('measurement_type')
-        section_width = request.form.get('section_width')
-        aspect_ratio = request.form.get('aspect_ratio')
-        rim_size = request.form.get('rim_size')
+        tire_size = request.form.get('tire_size')
         load_rating = request.form.get('load_rating')
         brand_name = request.form.get('brand_name')
+
+        # splits the tire size into section_width, aspect_ratio, and rim_size
+        section_width, aspect_ratio, rim_size = map(int, tire_size.split('/'))
+
+        # checks if the tire dimensions are valid
+        if not (125 <= section_width <= 355 and section_width % 5 == 0):
+            return "Error: Invalid section width"
+        if not (20 <= aspect_ratio <= 90 and aspect_ratio % 5 == 0):
+            return "Error: Invalid aspect ratio"
+        if not (14 <= rim_size <= 23):
+            return "Error: Invalid rim size"
 
         # traverses tire_brands.txt
         with open('tire_brands.txt', 'r') as f:
             tire_brands = f.read().splitlines()
 
-        # check if the brand name is in the list of tire brands
+        # checks if the brand name is in the list of tire brands
         if brand_name not in tire_brands:
             return "Error: Invalid brand name"
 
