@@ -1,40 +1,64 @@
-from flask import Flask, request, Response, jsonify
+import os
+from flask import Flask, request, Response, render_template
 from werkzeug.security import check_password_hash, generate_password_hash
-from functools import wraps
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv() # takes environment variables from .env file
 
-USERNAME = 'txe_01'
-PASSWORD_HASH = generate_password_hash('used')
+app = Flask(__name__, template_folder='public/templates')
 
-# A simple in-memory data store for the example
+USERNAME = os.getenv('APP_USERNAME')
+PASSWORD_HASH = generate_password_hash(os.getenv('PASSWORD'))
+
+# Placeholder for the inventory
 inventory = []
 
-def auth_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not (auth.username == USERNAME and check_password_hash(PASSWORD_HASH, auth.password)):
-            return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-        return f(*args, **kwargs)
-    return decorated
+def authenticate(auth):
+    return auth and auth.username == USERNAME and check_password_hash(PASSWORD_HASH, auth.password)
 
 @app.route('/')
-@auth_required
 def home():
-    return "Signing in . . ."
+    auth = request.authorization
+    if not authenticate(auth):
+        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    return render_template('home.html')
 
-@app.route('/inventory', methods=['GET'])
-@auth_required
-def get_inventory():
-    return jsonify(inventory)
+@app.route('/add', methods=['GET', 'POST'])
+def add_tire():
+    auth = request.authorization
+    if not authenticate(auth):
+        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    if request.method == 'POST':
+        tire = request.form.get('tire')
+        inventory.append(tire)
+    return render_template('add.html')
 
-@app.route('/inventory', methods=['POST'])
-@auth_required
-def add_item():
-    item = request.json
-    inventory.append(item)
-    return jsonify(item), 201
+@app.route('/remove', methods=['GET', 'POST'])
+def remove_tire():
+    auth = request.authorization
+    if not authenticate(auth):
+        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    if request.method == 'POST':
+        tire = request.form.get('tire')
+        inventory.remove(tire)
+    return render_template('remove.html')
+
+@app.route('/search', methods=['GET', 'POST'])
+def search_by_size():
+    auth = request.authorization
+    if not authenticate(auth):
+        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    if request.method == 'POST':
+        size = request.form.get('size')
+        results = [tire for tire in inventory if tire.size == size]
+    return render_template('search.html')
+
+@app.route('/show')
+def show_inventory():
+    auth = request.authorization
+    if not authenticate(auth):
+        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    return render_template('show.html', inventory=inventory)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
