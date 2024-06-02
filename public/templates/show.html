@@ -4,40 +4,73 @@
     <title>Show All Inventory</title>
     <style>
         table {
-            width: 100%;
+            width: 50%;
             border-collapse: collapse;
         }
         th, td {
-            border: 1px solid #cdcdcd;
+            border: 1px solid #dcdcdc;
             padding: 8px;
             text-align: left;
         }
         th {
-            background-color: #d41414;
+            background-color: #dc1600;
             color: white;
         }
     </style>
 </head>
 <body>
     <h1>All Inventory</h1>
+
+    <!-- Search form -->
+    <form action="/search" method="post">
+        <label for="section_width">Section Width:</label><br>
+        <input type="number" id="section_width" name="section_width" min="165" max="335" required><br>
+        
+        <label for="aspect_ratio">Aspect Ratio:</label><br>
+        <input type="number" id="aspect_ratio" name="aspect_ratio" min="25" max="85" required><br>
+        
+        <label for="rim_size">Rim Size:</label><br>
+        <input type="number" id="rim_size" name="rim_size" min="13" max="22" required><br>
+        
+        <input type="submit" value="Search Tire">
+    </form>
+
+    <!-- search results -->
+    {% if results %}
+    <h2>Search Results</h2>
     <table>
         <tr>
             <th>Brand Name</th>
             <th>Load Rating</th>
-            <th>Section Width</th>
-            <th>Aspect Ratio</th>
-            <th>Rim Size</th>
+            <th>Tire Size</th>
+        </tr>
+        {% for tire in results %}
+        <tr>
+            <td>{{ tire.brand_name }}</td>
+            <td>{{ tire.load_rating }}</td>
+            <td>{{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <!-- all inventory -->
+    <h2>Used Inventory</h2>
+    <table>
+        <tr>
+            <th>Brand Name</th>
+            <th>Load Rating</th>
+            <th>Tire Size</th>
         </tr>
         {% for tire in inventory %}
         <tr>
             <td>{{ tire.brand_name }}</td>
             <td>{{ tire.load_rating }}</td>
-            <td>{{ tire.section_width }}</td>
-            <td>{{ tire.aspect_ratio }}</td>
-            <td>{{ tire.rim_size }}</td>
+            <td>{{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</td>
         </tr>
         {% endfor %}
     </table>
+
     <p><a href="/">Back to Home</a></p>
 </body>
 </html>

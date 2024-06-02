@@ -78,24 +78,17 @@ def remove_tire():
         inventory.remove(tire)
     return render_template('remove.html')
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/show', methods=['GET', 'POST'])
 def search_by_size():
     auth = request.authorization
     if not authenticate(auth):
         return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-    # if request method is POST, gets size from form and search inventory
+    # returns the findings of the exact request + three sizes above and below the original request
     if request.method == 'POST':
-        size = request.form.get('size')
-        results = [tire for tire in inventory if tire['size'] == size]
-    return render_template('search.html', results=results)
-
-@app.route('/show')
-def show_inventory():
-    auth = request.authorization
-    if not authenticate(auth):
-        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-    # renders page with all items in inventory
-    return render_template('show.html', inventory=inventory)
+        section_width = int(request.form.get('section_width'))
+        aspect_ratio = int(request.form.get('aspect_ratio'))
+        results = [tire for tire in inventory if section_width - 30 <= int(tire['section_width']) <= section_width + 30 and aspect_ratio - 15 <= int(tire['aspect_ratio']) <= aspect_ratio + 15]
+    return render_template('show.html', results=results, inventory=inventory)
 
 @app.route('/logout')
 def logout():
