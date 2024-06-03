@@ -91,11 +91,21 @@ def remove_tire():
     auth = request.authorization
     if not authenticate(auth):
         return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-    # if request method is POST, gets tire details from form and remove from inventory
+    
+    message = None
     if request.method == 'POST':
-        tire = request.form.get('tire')
-        inventory.remove(tire)
-    return render_template('remove.html')
+        # getter
+        selected_tires = request.form.getlist('tire')
+
+        # removes the selected tires from the inventory
+        for tire_id in selected_tires:
+            inventory = [tire for tire in inventory if tire['id'] != tire_id]
+
+        # displays success message
+        message = "Successfully removed selected tires."
+
+    return render_template('remove.html', inventory=inventory, message=message)
+
 
 @app.route('/show', methods=['GET', 'POST'])
 def search_by_size():

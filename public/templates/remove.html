@@ -45,6 +45,24 @@
         input[type="submit"]:hover {
             background-color: #d32f2f;
         }
+        .remove-button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            margin: 20px auto;
+        }
+        .remove-button:hover {
+            background-color: #dc1600;
+        }
+        .success {
+            color: rgb(20, 141, 20);
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -53,23 +71,32 @@
 
         <!-- remove form -->
         <form action="/remove" method="post">
-            <label for="measurement_type">Measurement Type:</label><br>
-            <select id="measurement_type" name="measurement_type" required>
-                <option value="metric">Metric</option>
-                <option value="imperial">Imperial</option>
-            </select><br>
+            <!-- inventory table -->
+            <table>
+                <tr>
+                    <th>Select</th>
+                    <th>Brand Name</th>
+                    <th>Load Rating</th>
+                    <th>Tire Size</th>
+                </tr>
+                {% for tire in inventory %}
+                <tr>
+                    <td><input type="checkbox" name="tire" value="{{ tire.id }}"></td>
+                    <td>{{ tire.brand_name }}</td>
+                    <td>{{ tire.load_rating }}</td>
+                    <td>{{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</td>
+                </tr>
+                {% endfor %}
+            </table>
 
-            <label for="section_width">Section Width:</label><br>
-            <input type="text" id="section_width" name="section_width" required><br>
-            
-            <label for="aspect_ratio">Aspect Ratio:</label><br>
-            <input type="text" id="aspect_ratio" name="aspect_ratio" required><br>
-            
-            <label for="rim_size">Rim Size:</label><br>
-            <input type="text" id="rim_size" name="rim_size" required><br>
-            
-            <input type="submit" value="Remove Tire">
+            <!-- remove button -->
+            <input type="submit" value="Remove Selected Tires" class="remove-button">
         </form>
+
+        <!-- success message -->
+        {% if message %}
+        <p class="success">{{ message }}</p>
+        {% endif %}
 
         <!-- link to home page -->
         <p><a href="/">Back to Home</a></p>
