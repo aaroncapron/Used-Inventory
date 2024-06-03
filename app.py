@@ -45,15 +45,26 @@ def add_tire():
         brand_name = request.form.get('brand_name')
 
         # splits the tire size into section_width, aspect_ratio, and rim_size
-        section_width, aspect_ratio, rim_size = map(int, tire_size.split('/'))
+        if measurement_type == 'metric':
+            section_width, aspect_ratio, rim_size = map(int, tire_size.split('/'))
+        elif measurement_type == 'imperial':
+            section_width, aspect_ratio, rim_size = map(float, tire_size.split('x'))
 
         # checks if the tire dimensions are valid
-        if not (125 <= section_width <= 355 and section_width % 5 == 0):
-            return "Error: Invalid section width"
-        if not (20 <= aspect_ratio <= 90 and aspect_ratio % 5 == 0):
-            return "Error: Invalid aspect ratio"
-        if not (14 <= rim_size <= 23):
-            return "Error: Invalid rim size"
+        if measurement_type == 'metric':
+            if not (125 <= section_width <= 355 and str(section_width)[-1] == '5'):
+                return "Error: Invalid section width. It should end with a 5."
+            if not (20 <= aspect_ratio <= 90 and aspect_ratio % 5 in [0, 5]):
+                return "Error: Invalid aspect ratio. It should end with 0 or 5."
+            if not (14 <= rim_size <= 23):
+                return "Error: Invalid rim size. It should be between 14 and 23."
+        elif measurement_type == 'imperial':
+            if not (25.0 <= section_width <= 40.0):
+                return "Error: Invalid section width. It should be between 25.0 and 40.0."
+            if not (8.0 <= aspect_ratio <= 15.0):
+                return "Error: Invalid aspect ratio. It should be between 8.0 and 15.0."
+            if not (14 <= rim_size <= 23):
+                return "Error: Invalid rim size. It should be between 14 and 23."
 
         # traverses tire_brands.txt
         with open('tire_brands.txt', 'r') as f:
