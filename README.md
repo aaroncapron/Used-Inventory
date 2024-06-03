@@ -27,6 +27,11 @@ This web app aims to solve these problems by providing a system that can store a
 
 - Implement a more secure authentication system.
 - Improve the user interface with CSS.
+- Add an 4-digit SKU to each added tire so you can easily ID tires irl
+- Add a date added trait to each tire and an age calculator next to it
+- TODO: limit tables in /remove and /show_inventory to their respective items per page count
+- Add a mini to-do list for tires that need sku's AND tires that will be removed/sold. 
+- ^ Can be printed ^
 
 ## License
 
