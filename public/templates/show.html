@@ -3,9 +3,17 @@
 <head>
     <title>Show All Inventory</title>
     <style>
-        table {
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #dcdcdc;
+        }
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
             width: 50%;
-            border-collapse: collapse;
         }
         th, td {
             border: 1px solid #dcdcdc;
@@ -19,10 +27,10 @@
     </style>
 </head>
 <body>
-    <h1>All Inventory</h1>
+    <h1 class="center">All Inventory</h1>
 
     <!-- search form -->
-    <form action="/search" method="post">
+    <form action="/search" method="post" class="center">
         <label for="tire_size">Tire Size:</label><br>
         <input type="text" id="tire_size" name="tire_size" placeholder="205/55/16" required><br>
         <input type="submit" value="Search Tire">
@@ -30,8 +38,8 @@
 
     <!-- search results -->
     {% if results %}
-    <h2>Search Results</h2>
-    <table>
+    <h2 class="center">Search Results</h2>
+    <table class="center">
         <tr>
             <th>Brand Name</th>
             <th>Load Rating</th>
@@ -48,8 +56,8 @@
     {% endif %}
 
     <!-- all inventory -->
-    <h2>Used Inventory</h2>
-    <table>
+    <h2 class="center">Used Inventory</h2>
+    <table class="center">
         <tr>
             <th>Brand Name</th>
             <th>Load Rating</th>
@@ -64,6 +72,6 @@
         {% endfor %}
     </table>
 
-    <p><a href="/">Back to Home</a></p>
+    <p class="center"><a href="/">Back to Home</a></p>
 </body>
 </html>
