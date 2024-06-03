@@ -63,6 +63,21 @@
             color: rgb(20, 141, 20);
             text-align: center;
         }
+        th, td {
+        padding: 15px;
+        text-align: left;
+        }
+        .brand-name {
+        text-transform: capitalize;
+        }
+        th {
+            background-color: #4b2690;
+            color: white;
+        }
+        table {
+        background-color: white;
+        color: black;
+        }
     </style>
 </head>
 <body>
@@ -76,15 +91,19 @@
                 <tr>
                     <th>Select</th>
                     <th>Brand Name</th>
-                    <th>Load Rating</th>
                     <th>Tire Size</th>
+                    <th>Load Rating</th>
                 </tr>
                 {% for tire in inventory %}
                 <tr>
                     <td><input type="checkbox" name="tire" value="{{ tire.id }}"></td>
-                    <td>{{ tire.brand_name }}</td>
+                    <td class="brand-name">{{ tire.brand_name }}</td>
+                    {% if tire.measurement_type == 'imperial' %}
+                        <td>{{ tire.section_width }}x{{ tire.aspect_ratio }}x{{ tire.rim_size }}</td>
+                    {% else %}
+                        <td>{{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</td>
+                    {% endif %}
                     <td>{{ tire.load_rating }}</td>
-                    <td>{{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</td>
                 </tr>
                 {% endfor %}
             </table>
