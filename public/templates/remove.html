@@ -92,8 +92,10 @@
         <!-- remove form -->
         <form action="/remove" method="post">
             {% for tire in inventory %}
-            <input type="checkbox" id="{{ tire.sku }}" name="tire" value="{{ tire.sku }}">
-            <label for="{{ tire.sku }}">{{ tire.brand_name }} {{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</label><br>
+            <label>
+                <input type="checkbox" id="{{ tire.sku }}" name="tire" value="{{ tire.sku }}">
+                {{ tire.brand_name }} {{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}
+            </label><br>
             {% endfor %}
             <input type="submit" value="Remove Selected Tires">
         </form>
