@@ -2,7 +2,7 @@
 ## Why It's Needed
 In the tire industry, used tires are a popular choice for customers on a budget. However, managing the inventory of these used tires can be a challenge. The inventory is often misorganized, making it difficult to find specific tires.
 
-This web app aims to solve these problems by providing a system that can store and manage the inventory of used tires. It keeps track of key details for each tire, such as size, age, brand, and whether it’s been checked for leaks.
+This web app aims to solve these problems by providing a system that can store and manage the inventory of used tires. It keeps track of key details for each tire, such as brand, size, load rating, age, and if it's been checked for leaks.
 
 ## Features
 
@@ -21,11 +21,13 @@ This web app aims to solve these problems by providing a system that can store a
 
 ## Future Improvements
 
-- Implement a more secure authentication system.
-- Improve the user interface with CSS.
+- Make the web app accessible from any network
+- Use a database (DBLite) to store data
+- Implement a more secure authentication system
+- Improve the user interface with CSS
 - Add an 4-digit SKU to each added tire so you can easily ID tires irl
-- Add a date-added trait to each tire and an age calculator next to it
-- TODO: limit tables in /remove and /show_inventory to their respective items per page count
+- Tire Traits: date_added, age_calc, leak_checked
+- limit tables in /remove and /show_inventory to their respective items per page count
 - Add a mini to-do list for tires that need sku's AND tires that will be removed/sold.
 - ^ Can be printed ^
 

@@ -84,38 +84,19 @@
     <div class="container">
         <h1>Remove Tires</h1>
 
+        <!-- displays message -->
+        {% if message %}
+        <p>{{ message }}</p>
+        {% endif %}
+
         <!-- remove form -->
         <form action="/remove" method="post">
-            <!-- inventory table -->
-            <table>
-                <tr>
-                    <th>Select</th>
-                    <th>Brand Name</th>
-                    <th>Tire Size</th>
-                    <th>Load Rating</th>
-                </tr>
-                {% for tire in inventory %}
-                <tr>
-                    <td><input type="checkbox" name="tire" value="{{ tire.id }}"></td>
-                    <td class="brand-name">{{ tire.brand_name }}</td>
-                    {% if tire.measurement_type == 'imperial' %}
-                        <td>{{ tire.section_width }}x{{ tire.aspect_ratio }}x{{ tire.rim_size }}</td>
-                    {% else %}
-                        <td>{{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</td>
-                    {% endif %}
-                    <td>{{ tire.load_rating }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-
-            <!-- remove button -->
-            <input type="submit" value="Remove Selected Tires" class="remove-button">
+            {% for tire in inventory %}
+            <input type="checkbox" id="{{ tire.sku }}" name="tire" value="{{ tire.sku }}">
+            <label for="{{ tire.sku }}">{{ tire.brand_name }} {{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</label><br>
+            {% endfor %}
+            <input type="submit" value="Remove Selected Tires">
         </form>
-
-        <!-- success message -->
-        {% if message %}
-        <p class="success">{{ message }}</p>
-        {% endif %}
 
         <!-- link to home page -->
         <p><a href="/">Back to Home</a></p>

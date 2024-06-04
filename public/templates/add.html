@@ -63,19 +63,23 @@
                 <option value="metric">Metric</option>
                 <option value="imperial">Imperial</option>
             </select><br>
-            <label for="tire_size">Tire Size  (Metric - 245/40/18  |  Imperial - 35x12.5x20):</label><br>
+            <label for="tire_size">Tire Size  (Ex: Metric - 245/40/18  |  Imperial - 35x12.5x20):</label><br>
             <input type="text" id="tire_size" name="tire_size" required><br>
             <label for="load_rating">Load Rating:</label><br>
             <select id="load_rating" name="load_rating" required>
                 <option value="P">P</option>
                 <option value="LT">LT</option>
             </select><br>
-
             <label for="brand_name">Brand Name:</label><br>
             <input type="text" id="brand_name" name="brand_name" required><br>
             
             <input type="submit" value="Add Tire">
         </form>
+
+        <!-- displays SKU -->
+        {% if sku %}
+            <p>Last Tire's SKU: {{ sku }}</p>
+        {% endif %}
 
         <!-- link to home page -->
         <p><a href="/">Back to Home</a></p>

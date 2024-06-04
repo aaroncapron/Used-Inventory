@@ -16,6 +16,7 @@ USERNAME = os.getenv('APP_USERNAME')
 PASSWORD_HASH = generate_password_hash(os.getenv('PASSWORD'))
 
 inventory = []
+sku = 1000  # initialize SKU
 
 # authenticates user
 def authenticate(auth):
@@ -34,6 +35,7 @@ def home():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_tire():
+    global sku  # access the global SKU
     auth = request.authorization
     if not authenticate(auth):
         return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
@@ -45,6 +47,7 @@ def add_tire():
         tire_size = request.form.get('tire_size')
         load_rating = request.form.get('load_rating')
         brand_name = request.form.get('brand_name')
+        brand_name = brand_name.lower()
 
         # check if any field is left blank
         if not all([measurement_type, tire_size, load_rating, brand_name]):
@@ -87,6 +90,7 @@ def add_tire():
             # if no errors, adds the tire to the inventory
             if message is None:
                 tire = {
+                    'sku': sku,  # add SKU to tire
                     'measurement_type': measurement_type,
                     'section_width': section_width,
                     'aspect_ratio': aspect_ratio,
@@ -95,6 +99,7 @@ def add_tire():
                     'brand_name': brand_name
                 }
                 inventory.append(tire)
+                sku += 1  # increment SKU
                 message = "Tire successfully added to inventory."
 
     return render_template('add.html', message=message)
@@ -116,8 +121,11 @@ def remove_tire():
             message = "No tires selected for removal."
         else:
             # removes the selected tires from the inventory
-            for tire_id in selected_tires:
-                inventory = [tire for tire in inventory if tire['id'] != tire_id]
+            for tire_sku in selected_tires:
+                inventory = [tire for tire in inventory if tire['sku'] != int(tire_sku)]
+                # capitalize the brand_name of each tire
+                for tire in inventory:
+                    tire['brand_name'] = tire['brand_name'].title()
 
             # sets a success message
             message = "Successfully removed selected tires."
