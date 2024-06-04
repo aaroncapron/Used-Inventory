@@ -15,14 +15,29 @@
             margin-right: auto;
             width: 30%;
         }
+        th {
+            background-color: #4b2690;
+            color: white;
+            position: relative;
+            cursor: pointer;
+            min-width: 120px;
+            padding-right: 15px;
+        }
         th, td {
             border: 1px solid #ffffff;
             padding: 8px;
             text-align: left;
         }
-        th {
-            background-color: #4b2690;
-            color: white;
+        th:after {
+            content: ' ▼';
+            position: absolute;
+            right: 5px;
+        }
+        th.asc:after {
+            content: ' ▲';
+        }
+        th:hover {
+            background-color: #6c3ec1;
         }
         table {
         background-color: white;
@@ -33,57 +48,77 @@
             margin-bottom: 20px;
         }
     </style>
+    <script>
+        function sortTable(n, tableId) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById(tableId);
+            switching = true;
+            // removes all 'asc' classes
+            Array.from(table.getElementsByTagName("th")).forEach(function(header) {
+                header.classList.remove("asc");
+            });
+            dir = "asc";
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+            // if final direction is 'asc', add the 'asc' class to the header
+            if (dir == "asc") {
+                table.getElementsByTagName("th")[n].classList.add("asc");
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1 class="center">All Inventory</h1>
+    <div class="container">
+        <h1>Show Inventory</h1>
 
-    <!-- search form -->
-    <form action="/show_inventory" method="post" class="center">
-        <label for="tire_size">Tire Size:</label><br>
-        <input type="text" id="tire_size" name="tire_size" placeholder="205/55/16" required><br>
-        <input type="submit" value="Search Tire">
-    </form>
-
-    <!-- number of items per page -->
-    <form action="/show_inventory" method="get" class="center space">
-        <label for="items_per_page">Items per page:</label>
-        <select name="items_per_page" id="items_per_page">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="25">25</option>
-        </select>
-        <input type="submit" value="Update">
-    </form>
-
-    <!-- all inventory -->
-    <h2 class="center">Used Inventory</h2>
-    <table class="center">
-        <tr>
-            <th>Brand Name</th>
-            <th>Tire Size</th>
-            <th>Load Rating</th>
-        </tr>
-        {% for tire in inventory %}
-        <tr>
-            <td>{{ tire.brand_name }}</td>
-            {% if tire.measurement_type == 'imperial' %}
-                <td>{{ tire.section_width }}x{{ tire.aspect_ratio }}x{{ tire.rim_size }}</td>
-            {% else %}
+        <!-- inventory table -->
+        <table id="inventoryTable">
+            <tr>
+                <th onclick="sortTable(0, 'inventoryTable')">SKU</th>
+                <th onclick="sortTable(1, 'inventoryTable')">Brand Name</th>
+                <th onclick="sortTable(2, 'inventoryTable')">Tire Size</th>
+                <th onclick="sortTable(3, 'inventoryTable')">Load Rating</th>
+            </tr>
+            {% for tire in inventory %}
+            <tr>
+                <td>{{ tire.sku }}</td>
+                <td>{{ tire.brand_name }}</td>
                 <td>{{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</td>
-            {% endif %}
-            <td>{{ tire.load_rating }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+                <td>{{ tire.load_rating }}</td>
+            </tr>
+            {% endfor %}
+        </table>
 
-    <!-- navigation -->
-    <div class="center space">
-        {% if page_num > 1 %}
-            <a href="{{ url_for('show_inventory', page_num=page_num-1) }}">Previous</a>
-        {% endif %}
-        <a href="{{ url_for('show_inventory', page_num=page_num+1) }}">Next</a>
+        <!-- link to home page -->
+        <p><a href="/">Back to Home</a></p>
     </div>
-
-    <p class="center space"><a href="/">Back to Home</a></p>
 </body>
 </html>
