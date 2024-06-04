@@ -124,8 +124,9 @@ def remove_tire():
 
     return render_template('remove.html', inventory=inventory, message=message)
 
-@app.route('/show_inventory', methods=['GET', 'POST'])
-def search():
+@app.route('/show_inventory', defaults={'page_num': 1})
+@app.route('/show_inventory/<int:page_num>', methods=['GET', 'POST'])
+def show_inventory(page_num):
     auth = request.authorization
     global inventory
     if not authenticate(auth):
@@ -133,7 +134,7 @@ def search():
 
     results = []
     if request.method == 'POST':
-        # getter
+        # tire size getter
         tire_size = request.form.get('tire_size')
 
         # splits the tire size into section_width, aspect_ratio, and rim_size
@@ -142,7 +143,17 @@ def search():
         # searches inventory for matching tires
         results = [tire for tire in inventory if section_width - 30 <= int(tire['section_width']) <= section_width + 30 and aspect_ratio - 15 <= int(tire['aspect_ratio']) <= aspect_ratio + 15]
 
-    return render_template('show_inventory.html', inventory=inventory)
+    # gets number of items per page from request, defaults to 10
+    items_per_page = request.args.get('items_per_page', 10, type=int)
+
+    # calculates start and end indices for items on page
+    start = (page_num - 1) * items_per_page
+    end = start + items_per_page
+
+    # page items getter
+    page_items = inventory[start:end]
+
+    return render_template('show_inventory.html', inventory=page_items, page_num=page_num)
 
 @app.route('/logout')
 def logout():

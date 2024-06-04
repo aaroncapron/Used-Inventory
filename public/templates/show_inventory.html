@@ -28,6 +28,10 @@
         background-color: white;
         color: black;
         }
+        .space {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -38,6 +42,17 @@
         <label for="tire_size">Tire Size:</label><br>
         <input type="text" id="tire_size" name="tire_size" placeholder="205/55/16" required><br>
         <input type="submit" value="Search Tire">
+    </form>
+
+    <!-- number of items per page -->
+    <form action="/show_inventory" method="get" class="center space">
+        <label for="items_per_page">Items per page:</label>
+        <select name="items_per_page" id="items_per_page">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+        </select>
+        <input type="submit" value="Update">
     </form>
 
     <!-- all inventory -->
@@ -61,6 +76,14 @@
         {% endfor %}
     </table>
 
-    <p class="center"><a href="/">Back to Home</a></p>
+    <!-- navigation -->
+    <div class="center space">
+        {% if page_num > 1 %}
+            <a href="{{ url_for('show_inventory', page_num=page_num-1) }}">Previous</a>
+        {% endif %}
+        <a href="{{ url_for('show_inventory', page_num=page_num+1) }}">Next</a>
+    </div>
+
+    <p class="center space"><a href="/">Back to Home</a></p>
 </body>
 </html>
