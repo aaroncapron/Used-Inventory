@@ -111,7 +111,13 @@
             <tr>
                 <td>{{ tire.sku }}</td>
                 <td>{{ tire.brand_name }}</td>
-                <td>{{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}</td>
+                <td>
+                    {% if tire.measurement_type == 'imperial' %}
+                        {{ tire.section_width }}x{{ tire.aspect_ratio }}x{{ tire.rim_size }}
+                    {% else %}
+                        {{ tire.section_width }}/{{ tire.aspect_ratio }}/{{ tire.rim_size }}
+                    {% endif %}
+                </td>
                 <td>{{ tire.load_rating }}</td>
             </tr>
             {% endfor %}
