@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #dcdcdc;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        ul li a {
+            background-color: #555555;
+            color: #dcdcdc;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        ul li a:hover {
+            background-color: #555555;
+        }
+        .nav-link {
+            background-color: #666666;
+        }
+        .nav-link.active {
+            background-color: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Used Inventory System</h1>
+        <p>Please choose an option:</p>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/add' %}active{% endif %}" href="/add">
+                    <i class="fa fa-plus"></i> Add Tires
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/remove' %}active{% endif %}" href="/remove">
+                    <i class="fa fa-minus"></i> Remove Tires
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/show_inventory' %}active{% endif %}" href="/show_inventory">
+                    <i class="fa fa-table"></i> Show All Inventory
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/logout' %}active{% endif %}" href="/logout">
+                    <i class="fa fa-sign-out"></i> Logout
+                </a>
+            </li>
+        </ul>        
+    </div>
+</body>
+</html>
