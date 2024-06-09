@@ -3,11 +3,13 @@ from flask import Flask, request, Response, render_template, session, redirect, 
 from firebase_admin import credentials, firestore, initialize_app
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
+from google.cloud import firestore
+from datetime import datetime
 
-# loads environment variables from .env file
+# loads environment variables from .env
 load_dotenv()
 
-# Initialize Firestore with environment variables
+# firestore credentials from .env
 cred = credentials.Certificate({
     "type": os.getenv('FIREBASE_TYPE'),
     "project_id": os.getenv('FIREBASE_PROJECT_ID'),
@@ -21,9 +23,23 @@ cred = credentials.Certificate({
     "client_x509_cert_url": os.getenv('FIREBASE_CLIENT_X509_CERT_URL')
 })
 default_app = initialize_app(cred)
-db = firestore.client()
 
-app = Flask(__name__, template_folder='public/templates')
+# 
+db = firestore.Client()
+
+# ref to the collection
+tires_collection = db.collection('tires')
+
+# adds new fields to all documents in the collection
+def add_new_fields():
+    for tire in tires_collection.stream():
+        # adds 'leak_checked' field set to False and 'date_added' field set to current date
+        tire.reference.update({
+            'leak_checked': False,
+            'date_added': firestore.SERVER_TIMESTAMP
+        })
+
+app = Flask(__name__, template_folder='templates')
 
 # secret key for session management, stored in .env file
 app.secret_key = os.getenv('SECRET_KEY').encode()
@@ -43,11 +59,10 @@ def authenticate(auth):
 @app.route('/')
 def home():
     # gets authorization from request
-    auth = request.authorization
+    auth = request.authorization 
     # if authentication fails, returns 401 status code
     if not authenticate(auth):
         return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-    # if authentication succeeds, renders home page
 
     # gets the latest 5 tires from firestore
     docs = db.collection('tires').order_by('sku', direction=firestore.Query.DESCENDING).limit(5).stream()
@@ -62,44 +77,44 @@ def add_tire():
     if not authenticate(auth):
         return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
-    brand_name = measurement_type = tire_size = load_rating = message = None
+    message = None
+
     if request.method == 'POST':
         # getters
         measurement_type = request.form.get('measurement_type')
         tire_size = request.form.get('tire_size')
         load_rating = request.form.get('load_rating')
-        brand_name = request.form.get('brand_name')
-        brand_name = brand_name.lower()
+        brand_name = request.form.get('brand_name', '').lower()
+        quantity = int(request.form.get('quantity'))
 
-    # check if any field is left blank
-    if not all([measurement_type, tire_size, load_rating, brand_name]):
-        message = "Error: All fields must be filled out."
-    else:
-        # split the tire info into section_width, aspect_ratio, and rim_size
-        if measurement_type == 'metric':
-            if '/' in tire_size:
-                section_width, aspect_ratio, rim_size = map(int, tire_size.split('/'))
-                # check if the tire dimensions are valid
-                if not (125 <= section_width <= 355 and str(section_width)[-1] == '5'):
-                    message = "Error: Invalid section width. It should end with a 5."
-                elif not (20 <= aspect_ratio <= 90 and aspect_ratio % 5 in [0, 5]):
-                    message = "Error: Invalid aspect ratio. It should end with 0 or 5."
-                elif not (14 <= rim_size <= 23):
-                    message = "Error: Invalid rim size. It should be between 14 and 23."
-            else:
-                message = "Error: Invalid tire size for metric measurement. It should be in the format 'width/aspect_ratio/rim_size'."
-        elif measurement_type == 'imperial':
-            if 'x' in tire_size:
-                section_width, aspect_ratio, rim_size = map(float, tire_size.split('x'))
-                # check if the tire dimensions are valid
-                if not (25.0 <= section_width <= 40.0):
-                    message = "Error: Invalid section width. It should be between 25.0 and 40.0."
-                elif not (8.0 <= aspect_ratio <= 15.0):
-                    message = "Error: Invalid aspect ratio. It should be between 8.0 and 15.0."
-                elif not (14 <= rim_size <= 23):
-                    message = "Error: Invalid rim size. It should be between 14 and 23."
-            else:
-                message = "Error: Invalid tire size for imperial measurement. It should be in the format 'widthxaspect_ratioxrim_size'."
+        if not all([measurement_type, tire_size, load_rating, brand_name]):
+            message = "Error: All fields must be filled out."
+        else:
+            # splits the tire info into section_width, aspect_ratio, and rim_size
+            if measurement_type == 'metric':
+                if '/' in tire_size:
+                    section_width, aspect_ratio, rim_size = map(int, tire_size.split('/'))
+                    # check if the tire dimensions are valid
+                    if not (125 <= section_width <= 355 and str(section_width)[-1] == '5'):
+                        message = "Error: Invalid section width. It should end with a 5."
+                    elif not (20 <= aspect_ratio <= 90 and aspect_ratio % 5 in [0, 5]):
+                        message = "Error: Invalid aspect ratio. It should end with 0 or 5."
+                    elif not (14 <= rim_size <= 23):
+                        message = "Error: Invalid rim size. It should be between 14 and 23."
+                else:
+                    message = "Error: Invalid tire size for metric measurement. It should be in the format 'width / aspect_ratio / rim_size'."
+            elif measurement_type == 'imperial':
+                if 'x' in tire_size:
+                    section_width, aspect_ratio, rim_size = map(float, tire_size.split('x'))
+                    # checks if the tire dimensions are valid
+                    if not (25.0 <= section_width <= 40.0):
+                        message = "Error: Invalid section width. It should be between 25.0 and 40.0."
+                    elif not (8.0 <= aspect_ratio <= 15.0):
+                        message = "Error: Invalid aspect ratio. It should be between 8.0 and 15.0."
+                    elif not (14 <= rim_size <= 23):
+                        message = "Error: Invalid rim size. It should be between 14 and 23."
+                else:
+                    message = "Error: Invalid tire size for imperial measurement. It should be in the format 'width x aspect_ratio x rim_size'."
 
         # traverses tire_brands.txt
         with open('tire_brands.txt', 'r') as f:
@@ -111,18 +126,21 @@ def add_tire():
 
         # if no errors, adds the tire to the inventory
         if message is None:
-            tire = {
-                'sku': sku,
-                'measurement_type': measurement_type,
-                'section_width': section_width,
-                'aspect_ratio': aspect_ratio,
-                'rim_size': rim_size,
-                'load_rating': load_rating,
-                'brand_name': brand_name
-            }
-        db.collection('tires').document(str(sku)).set(tire)
-        sku += 1  # increment SKU
-        message = "Tire successfully added to inventory."
+            for _ in range(quantity):  # loop to add multiple tires
+                tire = {
+                    'sku': sku,
+                    'measurement_type': measurement_type,
+                    'section_width': section_width,
+                    'aspect_ratio': aspect_ratio,
+                    'rim_size': rim_size,
+                    'load_rating': load_rating,
+                    'brand_name': brand_name,
+                    'leak_checked': False, 
+                    'date_added': firestore.SERVER_TIMESTAMP 
+                }
+                db.collection('tires').document(str(sku)).set(tire)
+                sku += 1
+                message = f"{quantity} tire(s) successfully added to inventory."
 
     return render_template('add.html', message=message)
 
