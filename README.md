@@ -24,7 +24,6 @@ This web app aims to solve these problems by providing a system that can store a
 - Make the web app accessible from any network
 - Implement a more secure authentication system
 - Improve the user interface with CSS
-- Tire Traits: date_added, age_calc, leak_checked
 - Limit tables in /remove and /show_inventory to their respective items per page count
 - Add a printable to-do list for tires that need SKU's and for tires that will be removed/sold.
 
