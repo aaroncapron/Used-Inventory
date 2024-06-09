@@ -22,14 +22,11 @@ This web app aims to solve these problems by providing a system that can store a
 ## Future Improvements
 
 - Make the web app accessible from any network
-- Use a database (DBLite) to store data
 - Implement a more secure authentication system
 - Improve the user interface with CSS
-- Add an 4-digit SKU to each added tire so you can easily ID tires irl
 - Tire Traits: date_added, age_calc, leak_checked
-- limit tables in /remove and /show_inventory to their respective items per page count
-- Add a mini to-do list for tires that need sku's AND tires that will be removed/sold.
-- ^ Can be printed ^
+- Limit tables in /remove and /show_inventory to their respective items per page count
+- Add a printable to-do list for tires that need SKU's and for tires that will be removed/sold.
 
 ## License
 
